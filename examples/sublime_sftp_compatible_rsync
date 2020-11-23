@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PROJ_BASE_DIR=$(pwd)
+REMOTE=$(python -c "import json; conf = json.loads(''.join(l for l in open('sftp-config.json', 'r').readlines() if not l.lstrip().startswith('//'))); print(f\"{conf['user']}@{conf['host']}:{conf['remote_path']}\")")
+cd $(dirname $0)
+
+if [ "upload" == $1 ];then
+    rsync -azcul -e "/usr/bin/ssh -q" --relative "$2/$3" ${REMOTE}  && echo "UPLOAD SUCCESS: ${REMOTE%/}/`realpath --relative-to=$PROJ_BASE_DIR ${2}/${3}`"
+elif [ 'download' == $1 ];then
+    rsync -azcul -e "/usr/bin/ssh -q" ${REMOTE}/$2/$3 `dirname $0`/$2/$3  && echo "DOWNLOAD SUCCESS: ${REMOTE%/}/`realpath --relative-to=$PROJ_BASE_DIR ${2}/${3}`"
+fi

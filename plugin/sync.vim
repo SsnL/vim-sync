@@ -1,3 +1,5 @@
+let s:plugindir = expand('<sfile>:p:h:h')
+
 " Defines the filenames of the executable file to execute to synchronize your sources
 " The executable file will be searched from the directory of the current file
 " You can provide multiple filename, separate with a ","
@@ -8,7 +10,7 @@
 "   - let g:sync_exe_filenames = '.sync;,.sync.sh;'
 "     Looks backward for a file named ".sync". If not found then looks backward for a file named ".sync.sh"
 if !exists('g:sync_exe_filenames')
-    let g:sync_exe_filenames = '.sync;'
+    let g:sync_exe_filenames = '.sync;,' . s:plugindir . '/examples/sublime_sftp_compatible_rsync'
 endif
 
 " When editing a symlink, only synchronized the target
