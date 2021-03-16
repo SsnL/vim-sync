@@ -22,7 +22,7 @@ cd $(dirname $0)
 REL_FILE_PATH="$(relpath $PROJ_BASE_DIR ${2})/${3}"
 
 if [ "upload" == $1 ];then
-    rsync -azcul -e "/usr/bin/ssh -q" --relative ${PROJ_BASE_DIR}/./${REL_FILE_PATH} ${REMOTE}  && echo "UPLOAD SUCCESS: ${REMOTE%/}/${REL_FILE_PATH}"
+    rsync -iazclR -e "/usr/bin/ssh -q" ${PROJ_BASE_DIR}/./${REL_FILE_PATH} ${REMOTE}  && echo "UPLOAD SUCCESS: ${REMOTE%/}/${REL_FILE_PATH}"
 elif [ 'download' == $1 ];then
-    rsync -azcul -e "/usr/bin/ssh -q" ${REMOTE}/${REL_FILE_PATH} ${PROJ_BASE_DIR}/${REL_FILE_PATH}  && echo "DOWNLOAD SUCCESS: ${REMOTE%/}/${REL_FILE_PATH}"
+    rsync -iazcl -e "/usr/bin/ssh -q" ${REMOTE}/${REL_FILE_PATH} ${PROJ_BASE_DIR}/${REL_FILE_PATH}  && echo "DOWNLOAD SUCCESS: ${REMOTE%/}/${REL_FILE_PATH}"
 fi
