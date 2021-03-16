@@ -19,8 +19,10 @@ PROJ_BASE_DIR=$(pwd)
 REMOTE=$(python -c "import yaml; conf = yaml.safe_load(''.join(l for l in open('sftp-config.json', 'r').readlines() if not l.lstrip().startswith('//'))); print(f\"{conf['user']}@{conf['host']}:{conf['remote_path']}\")")
 cd $(dirname $0)
 
+REL_FILE_PATH="$(relpath $PROJ_BASE_DIR ${2})/${3}"
+
 if [ "upload" == $1 ];then
-    rsync -azcul -e "/usr/bin/ssh -q" --relative "$2/$3" ${REMOTE}  && echo "UPLOAD SUCCESS: ${REMOTE%/}/$(relpath $PROJ_BASE_DIR ${2}/${3})"
+    rsync -azcul -e "/usr/bin/ssh -q" --relative ${PROJ_BASE_DIR}/./${REL_FILE_PATH} ${REMOTE}  && echo "UPLOAD SUCCESS: ${REMOTE%/}/${REL_FILE_PATH}"
 elif [ 'download' == $1 ];then
-    rsync -azcul -e "/usr/bin/ssh -q" ${REMOTE}/$2/$3 `dirname $0`/$2/$3  && echo "DOWNLOAD SUCCESS: ${REMOTE%/}/`realpath --relative-to=$PROJ_BASE_DIR ${2}/${3}`"
+    rsync -azcul -e "/usr/bin/ssh -q" ${REMOTE}/${REL_FILE_PATH} ${PROJ_BASE_DIR}/${REL_FILE_PATH}  && echo "DOWNLOAD SUCCESS: ${REMOTE%/}/${REL_FILE_PATH}"
 fi
